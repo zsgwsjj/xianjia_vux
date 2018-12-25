@@ -7,15 +7,15 @@
     </tab>
     <scroller height="-40px" lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
-        <div v-for="item in games" :key="item.id" style="margin-top: 10px" @click="goToDetail(item.id)">
+        <div style="margin-top: 10px" >
           <div style="display: flex;margin-left: 20px">
-            <img :src="item.gameIcon" style="width: 90px;height: 120px"/>
+            <img src="https://img.80txt.com/13/13001/13001s.jpg" style="width: 90px;height: 120px"/>
             <div style="margin-left: 15px">
-              <div style="font-size: 20px">{{item.gameName}}</div>
+              <div style="font-size: 20px">三寸人间</div>
               <div style="display: flex;margin-top: 10px">
                 <div class="game_info_list">
-                  <p>类型：动作游戏</p>
-                  <p>更新：2018-01-01</p>
+                  <p>小说作者：耳根</p>
+                  <p>小说大小：1M</p>
                   <p>评分：9.9</p>
                 </div>
                 <div class="game_info_list" style="margin-left: 10px">
@@ -29,7 +29,6 @@
           <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
                      background-color="#434343"></load-more>
         </div>
-        <load-more tip="loading"></load-more>
       </div>
     </scroller>
   </div>

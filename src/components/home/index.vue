@@ -4,7 +4,7 @@
       <tab-item selected @on-item-click="onItemClick">首页</tab-item>
       <tab-item @on-item-click="onItemClick(1)">单机</tab-item>
       <tab-item @on-item-click="onItemClick(2)">电影</tab-item>
-      <tab-item @on-item-click="onItemClick(3)">小说</tab-item>
+      <!--<tab-item @on-item-click="onItemClick(3)">小说</tab-item>-->
     </tab>
     <swiper
       :auto="true"
@@ -20,25 +20,23 @@
       </swiper-item>
     </swiper>
     <div class="list_tj" style="margin: 10px">
-      <div style="height: 100px">
+      <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
         <div style="display: flex">
-          <div>
-            <div class="news_title" style="font-size: 15px;height: 70%">ANIMUS启动！《荣耀战魂》X《刺客信条》联动活动公布</div>
+          <div style="width: 63%">
+            <div class="news_title" style="font-size: 15px;height: 70%">{{item.title}}</div>
             <div style="font-size: 14px;color: #999;display: flex">
-              <div style="width: 60%">游戏</div>
-              <div>1小时之前</div>
+              <div style="width: 60%">{{item.type}}</div>
+              <div>{{item.timeDistance}}</div>
             </div>
           </div>
-          <img style="margin-left: 10px;width: 112px;height: 72px"
-               src="https://img.3dmgame.com/uploads/images/thumbnews/2018/1222/1545471341392.jpg"/>
+          <img style="margin-left: 10px;width: 130px;height: 72px"
+               :src="item.newsImg"/>
         </div>
         <load-more style="margin: 0.5em 0 0;" :show-loading="false"
                    background-color="#434343"></load-more>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -60,6 +58,7 @@
     name: 'Game',
     data() {
       return {
+        news: [],
         banner: [],
         toastShow: 1,
         results: [],
@@ -69,6 +68,9 @@
       }
     },
     methods: {
+      goToNews(item) {
+        this.$router.push({name: 'newsDetail', params: item});
+      },
       onItemClick(index) {
         if (index === 1) {
           this.$router.push({name: 'game'});
@@ -94,7 +96,7 @@
 
       onChange() {
         if (!this.value) return;
-        this.$http.jsonp(`http://127.0.0.1:8111/resource/find?name=${this.value}`)
+        this.$http.jsonp(`https://jiang.imdo.co/resource/find?name=${this.value}`)
           .then((data) => {
             let resData = data.data
             if (resData.code === 0) {
@@ -111,18 +113,22 @@
       }
     },
     created() {
-      this.$http.jsonp('http://127.0.0.1:8111/banner/get')
+      this.$http.jsonp('https://jiang.imdo.co/banner/get')
         .then((data) => {
           let resData = data.data
           if (resData.code === 0) {
             this.banner = resData.data
           }
         });
-      this.$http.jsonp('http://127.0.0.1:8111/resource/game?pageNo=1&pageSize=4')
+      this.$http.jsonp('https://jiang.imdo.co/news/get?pageNo=1', {
+        headers: {
+          ContentType: 'charset=utf-8'
+        }
+      })
         .then((data) => {
           let resData = data.data
           if (resData.code === 0) {
-            this.hotGames = resData.data
+            this.news = resData.data;
           }
         })
     }

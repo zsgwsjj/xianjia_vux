@@ -5,6 +5,8 @@ import game from '../components/game'
 import gamedetail from '../components/gamedetail'
 import movie from '../components/movie'
 import moviedetail from '../components/moviedetail'
+import novel from '../components/novel'
+import newsDetail from '../components/newsDetail'
 
 Vue.use(Router)
 
@@ -30,6 +32,14 @@ export default new Router({
       path: '/moviedetail',
       name: 'moviedetail',
       component: moviedetail
+    },{
+      path: '/novel',
+      name: 'novel',
+      component: novel
+    },{
+      path: '/newsDetail',
+      name: 'newsDetail',
+      component: newsDetail
     }
   ]
 })
