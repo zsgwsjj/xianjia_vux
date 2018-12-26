@@ -67,7 +67,7 @@
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`https://jiang.imdo.co/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+        this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
@@ -108,7 +108,7 @@
       }
     },
     mounted() {
-      this.$http.jsonp(`https://jiang.imdo.co/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+      this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {

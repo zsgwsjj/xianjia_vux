@@ -20,31 +20,37 @@
       </swiper-item>
     </swiper>
     <div class="list_tj" style="margin: 10px">
-      <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
-        <div style="display: flex">
-          <div style="width: 63%">
-            <div class="news_title" style="font-size: 15px;height: 70%">{{item.title}}</div>
-            <div style="font-size: 14px;color: #999;display: flex">
-              <div style="width: 60%">{{item.type}}</div>
-              <div>{{item.timeDistance}}</div>
+      <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="100">
+        <div>
+          <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
+            <div style="display: flex">
+              <div style="width: 63%">
+                <div class="news_title" style="font-size: 15px;height: 70%">{{item.title}}</div>
+                <div style="font-size: 14px;color: #999;display: flex">
+                  <div style="width: 60%">{{item.type}}</div>
+                  <div>{{item.timeDistance}}</div>
+                </div>
+              </div>
+              <img style="margin-left: 10px;width: 130px;height: 72px"
+                   :src="item.newsImg"/>
             </div>
+            <load-more style="margin: 0.5em 0 0;" :show-loading="false"
+                       background-color="#434343"></load-more>
           </div>
-          <img style="margin-left: 10px;width: 130px;height: 72px"
-               :src="item.newsImg"/>
         </div>
-        <load-more style="margin: 0.5em 0 0;" :show-loading="false"
-                   background-color="#434343"></load-more>
-      </div>
+
+      </scroller>
     </div>
   </div>
 </template>
 
 <script>
-  import {Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
+  import {Scroller, Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
   import SwiperItem from "vux/src/components/swiper/swiper-item";
 
   export default {
     components: {
+      Scroller,
       Tab,
       TabItem,
       LoadMore,
@@ -58,6 +64,7 @@
     name: 'Game',
     data() {
       return {
+        pageNo: 1,
         news: [],
         banner: [],
         toastShow: 1,
@@ -78,6 +85,27 @@
           this.$router.push({name: 'movie'});
         }
       },
+      onScrollBottom() {
+        if (this.onFetching) return;
+        this.onFetching = true;
+        setTimeout(() => {
+          this.loadMore();
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.reset()
+          });
+          this.onFetching = false
+        }, 2000)
+      },
+      loadMore() {
+        this.pageNo = this.pageNo + 1;
+        this.$http.jsonp(`http://127.0.0.1/news/get?pageNo=${this.pageNo}`)
+          .then((data) => {
+            let resData = data.data;
+            if (resData.code === 0) {
+              this.news = this.news.concat(resData.data);
+            }
+          })
+      },
       goToDetail(id) {
         this.$router.push({name: 'gamedetail', params: {resId: id}});
       },
@@ -87,18 +115,14 @@
       clickBanner(id) {
         this.goToDetail(id)
       },
-      demo01_onIndexChange(index) {
-        this.demo01_index = index
-      },
       resultClick(item) {
         this.goToDetail(item.id)
       },
-
       onChange() {
         if (!this.value) return;
-        this.$http.jsonp(`https://jiang.imdo.co/resource/find?name=${this.value}`)
+        this.$http.jsonp(`http://127.0.0.1/resource/find?name=${this.value}`)
           .then((data) => {
-            let resData = data.data
+            let resData = data.data;
             if (resData.code === 0) {
               this.results = resData.data.Game;
             }
@@ -113,20 +137,16 @@
       }
     },
     created() {
-      this.$http.jsonp('https://jiang.imdo.co/banner/get')
+      this.$http.jsonp('http://127.0.0.1/banner/get')
         .then((data) => {
-          let resData = data.data
+          let resData = data.data;
           if (resData.code === 0) {
             this.banner = resData.data
           }
         });
-      this.$http.jsonp('https://jiang.imdo.co/news/get?pageNo=1', {
-        headers: {
-          ContentType: 'charset=utf-8'
-        }
-      })
+      this.$http.jsonp(`http://127.0.0.1/news/get?pageNo=${this.pageNo}`)
         .then((data) => {
-          let resData = data.data
+          let resData = data.data;
           if (resData.code === 0) {
             this.news = resData.data;
           }

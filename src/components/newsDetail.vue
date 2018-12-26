@@ -5,7 +5,7 @@
     </div>
     <div style="color: #999;font-size: 12px">{{detail.newsTime}}</div>
     <div class="content" style="margin-top: 20px;line-height: 24px;color: #434343;font-size: 15px"
-         v-html="detail.detail"></div>
+         v-html="content"></div>
   </div>
 </template>
 
@@ -28,14 +28,21 @@
     name: 'Game',
     data() {
       return {
-        detail: {}
+        detail: {},
+        content: '',
       }
     },
     methods: {},
     created() {
-      let newsInfo = this.$route.params;
-      console.log(newsInfo)
-      this.detail = newsInfo;
+      let detail = this.$route.params;
+      this.detail = detail;
+      this.$http.jsonp(`http://127.0.0.1/news/get/content?newsId=${detail.id}`)
+        .then((data) => {
+          let resData = data.data;
+          if (resData.code === 0) {
+            this.content = resData.data;
+          }
+        });
     }
   }
 </script>
@@ -82,7 +89,7 @@
     color: #969696
   }
 
-  .content >>> iframe{
+  .content >>> iframe {
     max-width: 100%;
     margin: 0 auto;
     height: 225px;

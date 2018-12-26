@@ -148,7 +148,7 @@
     methods: {
       getPw() {
         if (!this.downloadInfo.pw) {
-          this.$http.jsonp(`https://jiang.imdo.co/resource/down?resType=1&resId=${this.gameId}&uid=1`).then(res => {
+          this.$http.jsonp(`http://127.0.0.1/resource/down?resType=1&resId=${this.gameId}&uid=1`).then(res => {
               console.log(res.data)
               if (res.data.code === 0) {
                 this.downloadInfo = res.data.data;
@@ -197,7 +197,7 @@
         console.log('on cancel')
       },
       clickDownload(id) {
-        this.$http.jsonp(`https://jiang.imdo.co/resource/down?resType=1&resId=${id}&uid=1`)
+        this.$http.jsonp(`http://127.0.0.1/resource/down?resType=1&resId=${id}&uid=1`)
           .then((data) => {
             let resData = data.data
             if (resData.code === 0) {
@@ -210,7 +210,7 @@
     created() {
       let gameId = this.$route.params.resId;
       this.gameId = gameId;
-      this.$http.jsonp(`https://jiang.imdo.co/resource/detail?resType=1&resId=${gameId}`)
+      this.$http.jsonp(`http://127.0.0.1/resource/detail?resType=1&resId=${gameId}`)
         .then((data) => {
           let resData = data.data
           if (resData.code === 0) {

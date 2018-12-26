@@ -5,7 +5,7 @@
       <tab-item @on-item-click="onItemClick(1)">最新</tab-item>
       <tab-item @on-item-click="onItemClick(2)">评分</tab-item>
     </tab>
-    <scroller height="-40px" lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
+    <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
         <div v-for="item in games" :key="item.id" style="margin-top: 10px" @click="goToDetail(item.id)">
           <div style="display: flex;margin-left: 20px">
@@ -29,7 +29,7 @@
           <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
                      background-color="#434343"></load-more>
         </div>
-        <load-more tip="loading"></load-more>
+        <load-more tip="loading" :show-loading="showLoading"></load-more>
       </div>
     </scroller>
   </div>
@@ -63,17 +63,22 @@
       }
     },
     methods: {
+      onItemClick(itemId){
+        console.log(itemId)
+      },
       goToDetail(id) {
         this.$router.push({name: 'gamedetail', params: {resId: id}});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`https://jiang.imdo.co/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+        this.showLoading = true;
+        this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
               this.games = this.games.concat(resData.data);
             }
+            this.showLoading = true;
           })
       },
       onScrollBottom() {
@@ -109,7 +114,7 @@
       }
     },
     mounted() {
-      this.$http.jsonp(`https://jiang.imdo.co/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+      this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
@@ -144,7 +149,8 @@
     font-size: 15px;
     color: gray;
   }
-  .game_info_list{
+
+  .game_info_list {
     font-size: 14px;
     color: #959595;
   }
