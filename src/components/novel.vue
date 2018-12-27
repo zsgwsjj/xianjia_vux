@@ -37,6 +37,7 @@
 
 <script>
   import {Scroller, LoadMore, XHeader, Tab, TabItem} from 'vux'
+  import {apiDomain} from "../comm";
 
   export default {
     components: {
@@ -67,7 +68,7 @@
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+        this.$http.jsonp(`${apiDomain}/resource/game?pageNo=${this.pageNo}&pageSize=15`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
@@ -108,7 +109,7 @@
       }
     },
     mounted() {
-      this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+      this.$http.jsonp(`http://www.xianjia.xyz:8111/resource/game?pageNo=${this.pageNo}&pageSize=15`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {

@@ -116,6 +116,7 @@
 
 <script>
   import {Icon, ButtonTab, ButtonTabItem, XButton, Divider, LoadMore, XHeader, Tab, TabItem} from 'vux'
+  import {apiDomain} from '../../comm';
 
   export default {
     components: {
@@ -148,7 +149,7 @@
     methods: {
       getPw() {
         if (!this.downloadInfo.pw) {
-          this.$http.jsonp(`http://127.0.0.1/resource/down?resType=1&resId=${this.gameId}&uid=1`).then(res => {
+          this.$http.jsonp(`${apiDomain}/resource/down?resType=1&resId=${this.gameId}&uid=1`).then(res => {
               console.log(res.data)
               if (res.data.code === 0) {
                 this.downloadInfo = res.data.data;
@@ -197,7 +198,7 @@
         console.log('on cancel')
       },
       clickDownload(id) {
-        this.$http.jsonp(`http://127.0.0.1/resource/down?resType=1&resId=${id}&uid=1`)
+        this.$http.jsonp(`${apiDomain}/resource/down?resType=1&resId=${id}&uid=1`)
           .then((data) => {
             let resData = data.data
             if (resData.code === 0) {
@@ -210,7 +211,7 @@
     created() {
       let gameId = this.$route.params.resId;
       this.gameId = gameId;
-      this.$http.jsonp(`http://127.0.0.1/resource/detail?resType=1&resId=${gameId}`)
+      this.$http.jsonp(`${apiDomain}/resource/detail?resType=1&resId=${gameId}`)
         .then((data) => {
           let resData = data.data
           if (resData.code === 0) {

@@ -47,6 +47,7 @@
 <script>
   import {Scroller, Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
   import SwiperItem from "vux/src/components/swiper/swiper-item";
+  import {apiDomain} from '../../comm';
 
   export default {
     components: {
@@ -98,7 +99,7 @@
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`http://127.0.0.1/news/get?pageNo=${this.pageNo}`)
+        this.$http.jsonp(`${apiDomain}/news/get?pageNo=${this.pageNo}`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
@@ -120,7 +121,7 @@
       },
       onChange() {
         if (!this.value) return;
-        this.$http.jsonp(`http://127.0.0.1/resource/find?name=${this.value}`)
+        this.$http.jsonp(`${apiDomain}/resource/find?name=${this.value}`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
@@ -137,14 +138,14 @@
       }
     },
     created() {
-      this.$http.jsonp('http://127.0.0.1/banner/get')
+      this.$http.jsonp(`${apiDomain}/banner/get`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
             this.banner = resData.data
           }
         });
-      this.$http.jsonp(`http://127.0.0.1/news/get?pageNo=${this.pageNo}`)
+      this.$http.jsonp(`${apiDomain}/news/get?pageNo=${this.pageNo}`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {

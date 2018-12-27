@@ -13,7 +13,7 @@ FastClick.attach(document.body)
 
 Vue.config.productionTip = false
 Vue.use(VueResource);
-Vue.use(VueClipboard)
+Vue.use(VueClipboard);
 
 // 默认参数
 Vue.use(ToastPlugin);

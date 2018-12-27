@@ -7,18 +7,18 @@
     </tab>
     <scroller height="-40px" lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
-        <div style="margin-top: 10px" @click="goToDetail">
-          <div style="display: flex;margin-left: 20px">
-            <img src="http://www.dysfz.vip/images/cover//201812220514381564046921.jpg"
+        <div style="margin-top: 10px"  v-for="item in movies">
+          <div style="display: flex;margin-left: 20px" @click="goToDetail(item)">
+            <img :src="item.movieImgUrl"
                  style="width: 90px;height: 120px"/>
             <div style="margin-left: 10px;margin-right: 10px">
-              <div style="font-size: 15px">坚不可摧：救赎之路 Unbroken: Path to Redemption 【蓝光1080p内嵌中英字幕】【剧情/传记】【2018】【美国】</div>
-              <div style="display: flex;font-size: 14px;color: #999;margin-top: 0.3em">
-                <div>发布时间：</div>
-                <div>2018-01-11</div>
-                <div style="margin-left: 2em">豆瓣：</div>
-                <div style="color: red">9.9</div>
-              </div>
+              <div style="font-size: 15px">{{item.movieTitle}}</div>
+              <!--<div style="display: flex;font-size: 14px;color: #999;margin-top: 0.3em">-->
+              <!--<div>发布时间：</div>-->
+              <!--<div>{{movieReal}}</div>-->
+              <!--<div style="margin-left: 2em">豆瓣：</div>-->
+              <!--<div style="color: red">9.9</div>-->
+              <!--</div>-->
             </div>
           </div>
           <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
@@ -32,6 +32,7 @@
 
 <script>
   import {Scroller, LoadMore, XHeader, Tab, TabItem} from 'vux'
+  import {apiDomain} from '../../comm';
 
   export default {
     components: {
@@ -49,27 +50,25 @@
         showNoData: false,
         results: [],
         value: '',
-        games: [],
-        showList1: true,
-        scrollTop: 0,
+        movies: [],
         onFetching: false,
         bottomCount: 20
       }
     },
     methods: {
-      onItemClick(itemId){
+      onItemClick(itemId) {
         console.log(itemId)
       },
-      goToDetail() {
-        this.$router.push({name: 'moviedetail'});
+      goToDetail(item) {
+        this.$router.push({name: 'moviedetail', params: item});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+        this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
-              this.games = this.games.concat(resData.data);
+              this.movies = this.movies.concat(resData.data);
             }
           })
       },
@@ -106,11 +105,11 @@
       }
     },
     mounted() {
-      this.$http.jsonp(`http://127.0.0.1/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+      this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
-            this.games = resData.data
+            this.movies = resData.data
           }
         })
     }

@@ -12,6 +12,7 @@
 <script>
   import {Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
   import SwiperItem from "vux/src/components/swiper/swiper-item";
+  import {apiDomain} from "../comm";
 
   export default {
     components: {
@@ -36,7 +37,7 @@
     created() {
       let detail = this.$route.params;
       this.detail = detail;
-      this.$http.jsonp(`http://127.0.0.1/news/get/content?newsId=${detail.id}`)
+      this.$http.jsonp(`${apiDomain}/news/get/content?newsId=${detail.id}`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
