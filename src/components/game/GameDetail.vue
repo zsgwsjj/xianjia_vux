@@ -107,6 +107,7 @@
             this.$vux.toast.text('密码复制成功', 'top');
             window.location.href = this.downloadInfo.downUrl;
           }, fail => {
+            this.$vux.toast.text('密码复制失败', 'top');
             console.log("fail", fail)
           })
         }
