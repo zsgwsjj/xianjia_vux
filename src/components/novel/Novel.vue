@@ -7,18 +7,23 @@
     </tab>
     <scroller height="-40px" lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
-        <div style="margin-top: 10px"  v-for="item in movies">
-          <div style="display: flex;margin-left: 20px" @click="goToDetail(item)">
-            <img :src="item.movieImgUrl"
-                 style="width: 90px;height: 120px"/>
-            <div style="margin-left: 10px;margin-right: 10px">
-              <div style="font-size: 15px">{{item.movieTitle}}</div>
-              <!--<div style="display: flex;font-size: 14px;color: #999;margin-top: 0.3em">-->
-              <!--<div>发布时间：</div>-->
-              <!--<div>{{movieReal}}</div>-->
-              <!--<div style="margin-left: 2em">豆瓣：</div>-->
-              <!--<div style="color: red">9.9</div>-->
-              <!--</div>-->
+        <div style="margin-top: 10px" >
+          <div style="display: flex;margin-left: 20px">
+            <img src="https://img.80txt.com/13/13001/13001s.jpg" style="width: 90px;height: 120px"/>
+            <div style="margin-left: 15px">
+              <div style="font-size: 20px">三寸人间</div>
+              <div style="display: flex;margin-top: 10px">
+                <div class="game_info_list">
+                  <p>小说作者：耳根</p>
+                  <p>小说大小：1M</p>
+                  <p>评分：9.9</p>
+                </div>
+                <div class="game_info_list" style="margin-left: 10px">
+                  <p>平台：PC</p>
+                  <p>语言：英语</p>
+                  <p>大小：40G</p>
+                </div>
+              </div>
             </div>
           </div>
           <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
@@ -32,7 +37,7 @@
 
 <script>
   import {Scroller, LoadMore, XHeader, Tab, TabItem} from 'vux'
-  import {apiDomain} from '../../comm';
+  import {apiDomain} from "../../comm";
 
   export default {
     components: {
@@ -50,25 +55,24 @@
         showNoData: false,
         results: [],
         value: '',
-        movies: [],
+        games: [],
+        showList1: true,
+        scrollTop: 0,
         onFetching: false,
         bottomCount: 20
       }
     },
     methods: {
-      onItemClick(itemId) {
-        console.log(itemId)
-      },
-      goToDetail(item) {
-        this.$router.push({name: 'moviedetail', params: item});
+      goToDetail(id) {
+        this.$router.push({name: 'gamedetail', params: {resId: id}});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
+        this.$http.jsonp(`${apiDomain}/resource/game?pageNo=${this.pageNo}&pageSize=15`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
-              this.movies = this.movies.concat(resData.data);
+              this.games = this.games.concat(resData.data);
             }
           })
       },
@@ -105,11 +109,11 @@
       }
     },
     mounted() {
-      this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
+      this.$http.jsonp(`http://www.xianjia.xyz:8111/resource/game?pageNo=${this.pageNo}&pageSize=15`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
-            this.movies = resData.data
+            this.games = resData.data
           }
         })
     }
@@ -140,8 +144,7 @@
     font-size: 15px;
     color: gray;
   }
-
-  .game_info_list {
+  .game_info_list{
     font-size: 14px;
     color: #959595;
   }

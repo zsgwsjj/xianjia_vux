@@ -5,25 +5,13 @@
       <tab-item @on-item-click="onItemClick(1)">最新</tab-item>
       <tab-item @on-item-click="onItemClick(2)">评分</tab-item>
     </tab>
-    <scroller height="-40px" lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
+    <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
-        <div style="margin-top: 10px" >
-          <div style="display: flex;margin-left: 20px">
-            <img src="https://img.80txt.com/13/13001/13001s.jpg" style="width: 90px;height: 120px"/>
-            <div style="margin-left: 15px">
-              <div style="font-size: 20px">三寸人间</div>
-              <div style="display: flex;margin-top: 10px">
-                <div class="game_info_list">
-                  <p>小说作者：耳根</p>
-                  <p>小说大小：1M</p>
-                  <p>评分：9.9</p>
-                </div>
-                <div class="game_info_list" style="margin-left: 10px">
-                  <p>平台：PC</p>
-                  <p>语言：英语</p>
-                  <p>大小：40G</p>
-                </div>
-              </div>
+        <div style="margin-top: 10px"  v-for="item in movies">
+          <div style="display: flex;margin-left: 20px" @click="goToDetail(item)">
+            <img :src="item.movieImgUrl" style="width: 6em;height: 8em"/>
+            <div style="margin-left: 10px;margin-right: 10px">
+              <div style="font-size: 15px">{{item.movieTitle}}</div>
             </div>
           </div>
           <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
@@ -37,7 +25,7 @@
 
 <script>
   import {Scroller, LoadMore, XHeader, Tab, TabItem} from 'vux'
-  import {apiDomain} from "../comm";
+  import {apiDomain} from '../../comm';
 
   export default {
     components: {
@@ -55,24 +43,25 @@
         showNoData: false,
         results: [],
         value: '',
-        games: [],
-        showList1: true,
-        scrollTop: 0,
+        movies: [],
         onFetching: false,
         bottomCount: 20
       }
     },
     methods: {
-      goToDetail(id) {
-        this.$router.push({name: 'gamedetail', params: {resId: id}});
+      onItemClick(itemId) {
+        console.log(itemId)
+      },
+      goToDetail(item) {
+        this.$router.push({name: 'moviedetail', params: item});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`${apiDomain}/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+        this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
-              this.games = this.games.concat(resData.data);
+              this.movies = this.movies.concat(resData.data);
             }
           })
       },
@@ -93,27 +82,13 @@
       onScroll(pos) {
         this.scrollTop = pos.top
       },
-      onCellClick() {
-        window.alert('cell click')
-      },
-      onClickButton() {
-        window.alert('click')
-      },
-      changeList() {
-        this.showList1 = false
-        this.$nextTick(() => {
-          this.$refs.scroller.reset({
-            top: 0
-          })
-        })
-      }
     },
     mounted() {
-      this.$http.jsonp(`http://www.xianjia.xyz:8111/resource/game?pageNo=${this.pageNo}&pageSize=15`)
+      this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
         .then((data) => {
           let resData = data.data;
           if (resData.code === 0) {
-            this.games = resData.data
+            this.movies = resData.data
           }
         })
     }
@@ -140,12 +115,4 @@
     color: #42b983;
   }
 
-  .game_info {
-    font-size: 15px;
-    color: gray;
-  }
-  .game_info_list{
-    font-size: 14px;
-    color: #959595;
-  }
 </style>

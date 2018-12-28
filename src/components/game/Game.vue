@@ -1,27 +1,30 @@
 <template>
   <div class="game">
     <tab style="margin-top: 0">
-      <tab-item selected @on-item-click="onItemClick">热门</tab-item>
-      <tab-item @on-item-click="onItemClick(1)">最新</tab-item>
-      <tab-item @on-item-click="onItemClick(2)">评分</tab-item>
+      <tab-item selected @on-item-click="onItemClick(1)">热门</tab-item>
+      <tab-item @on-item-click="onItemClick(2)">最新</tab-item>
+      <!--<tab-item @on-item-click="onItemClick(2)">评分</tab-item>-->
     </tab>
     <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
       <div>
-        <div v-for="item in games" :key="item.id" style="margin-top: 10px" @click="goToDetail(item.id)">
+        <div v-for="item in games" :key="item.id" style="margin-top: 10px"
+             @click="goToDetail(item.id)">
           <div style="display: flex;margin-left: 20px">
-            <img :src="item.gameIcon" style="width: 90px;height: 120px"/>
+            <div class="game_icon">
+              <img :src="item.gameIcon" style="width: 90px;height: 120px"/>
+            </div>
             <div style="margin-left: 15px">
               <div style="font-size: 20px">{{item.gameName}}</div>
               <div style="display: flex;margin-top: 10px">
-                <div class="game_info_list">
-                  <p>类型：动作游戏</p>
-                  <p>更新：2018-01-01</p>
-                  <p>评分：9.9</p>
+                <div class="game_info_list" style="width: 8.5em">
+                  <p>类型：{{item.gameType}}</p>
+                  <p>上线：{{item.releaseTime}}</p>
+                  <p>评分：{{item.gameRate}}</p>
                 </div>
                 <div class="game_info_list" style="margin-left: 10px">
-                  <p>平台：PC</p>
-                  <p>语言：英语</p>
-                  <p>大小：40G</p>
+                  <p>平台：{{item.platform}}</p>
+                  <p>语言：{{item.gameLanguage}}</p>
+                  <!--<p>大小：{{item.gameSize}}</p>-->
                 </div>
               </div>
             </div>
@@ -51,6 +54,7 @@
     name: 'Game',
     data() {
       return {
+        listType: 1,
         pageNo: 1,
         showLoading: false,
         showNoData: false,
@@ -65,7 +69,11 @@
     },
     methods: {
       onItemClick(itemId) {
-        console.log(itemId)
+        this.listType = itemId;
+        this.pageNo = 1;
+        this.games = [];
+        this.getGameData(true);
+        this.$refs.scrollerBottom.reset()
       },
       goToDetail(id) {
         this.$router.push({name: 'gamedetail', params: {resId: id}});
@@ -73,14 +81,7 @@
       loadMore() {
         this.pageNo = this.pageNo + 1;
         this.showLoading = true;
-        this.$http.jsonp(`${apiDomain}/resource/game?pageNo=${this.pageNo}&pageSize=15`)
-          .then((data) => {
-            let resData = data.data;
-            if (resData.code === 0) {
-              this.games = this.games.concat(resData.data);
-            }
-            this.showLoading = true;
-          })
+        this.getGameData();
       },
       onScrollBottom() {
         if (this.onFetching) {
@@ -106,22 +107,25 @@
         window.alert('click')
       },
       changeList() {
-        this.showList1 = false
+        this.showList1 = false;
         this.$nextTick(() => {
           this.$refs.scroller.reset({
             top: 0
           })
         })
+      },
+      getGameData() {
+        this.$http.jsonp(`${apiDomain}/game/get?pageNo=${this.pageNo}&listType=${this.listType}`)
+          .then((data) => {
+            let resData = data.data;
+            if (resData.code === 0) {
+              this.games = this.games.concat(resData.data);
+            }
+          })
       }
     },
     mounted() {
-      this.$http.jsonp(`${apiDomain}/resource/game?pageNo=${this.pageNo}&pageSize=15`)
-        .then((data) => {
-          let resData = data.data;
-          if (resData.code === 0) {
-            this.games = resData.data
-          }
-        })
+      this.getGameData();
     }
   }
 </script>
@@ -146,13 +150,16 @@
     color: #42b983;
   }
 
-  .game_info {
-    font-size: 15px;
-    color: gray;
-  }
-
   .game_info_list {
     font-size: 14px;
     color: #959595;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .game_icon {
+    width: 90px;
+    height: 120px
   }
 </style>

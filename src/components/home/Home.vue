@@ -3,13 +3,10 @@
     <tab style="margin-top: 0">
       <tab-item selected @on-item-click="onItemClick">首页</tab-item>
       <tab-item @on-item-click="onItemClick(1)">单机</tab-item>
-      <tab-item @on-item-click="onItemClick(2)">电影</tab-item>
+      <!--<tab-item @on-item-click="onItemClick(2)">电影</tab-item>-->
       <!--<tab-item @on-item-click="onItemClick(3)">小说</tab-item>-->
     </tab>
-    <swiper
-      :auto="true"
-      @on-index-change="bannerIndexChange"
-    >
+    <swiper :auto="true">
       <swiper-item
         v-for="item in banner"
         :key="item.id"
@@ -109,9 +106,6 @@
       },
       goToDetail(id) {
         this.$router.push({name: 'gamedetail', params: {resId: id}});
-      },
-      bannerIndexChange(index) {
-        this.bannerIndex = index;
       },
       clickBanner(id) {
         this.goToDetail(id)

@@ -12,7 +12,7 @@
 <script>
   import {Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
   import SwiperItem from "vux/src/components/swiper/swiper-item";
-  import {apiDomain} from "../comm";
+  import {apiDomain} from "../../comm";
 
   export default {
     components: {
