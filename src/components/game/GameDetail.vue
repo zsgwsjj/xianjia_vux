@@ -35,6 +35,7 @@
       </div>
       <div>
         <x-button style="margin-top: 20px;width: 90%" type="primary" @click.native="getPw">{{downBtnValue}}</x-button>
+        <div></div>
         <div>
           <divider>游戏介绍</divider>
           <div class="game_desc" v-html="gameDetail.gameDesc"></div>
@@ -95,7 +96,7 @@
                   window.location.href = resData.downUrl;
                 } else {
                   this.downloadInfo = res.data.data;
-                  this.downBtnValue = `密码获取成功，再次点击前往下载`;
+                  this.downBtnValue = `密码:${this.downloadInfo.pw}，再次点击前往下载`;
                 }
               }
             }, fail => {
