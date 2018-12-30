@@ -78,20 +78,6 @@
         this.pageNo = this.pageNo + 1;
         this.getGameData();
       },
-      onScrollBottom() {
-        if (this.onFetching) {
-          // do nothing
-        } else {
-          this.onFetching = true;
-          setTimeout(() => {
-            this.loadMore();
-            this.$nextTick(() => {
-              this.$refs.scrollerBottom.reset()
-            });
-            this.onFetching = false
-          }, 2000)
-        }
-      },
       onScroll(pos) {
         this.scrollTop = pos.top
       },

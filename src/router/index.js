@@ -15,33 +15,56 @@ export default new Router({
     {
       path: '/',
       name: 'home',
+      meta: {
+        // keepAlive: true,
+        info: '咸嘉资源系统'
+      },
       component: home,
-      // meta: { keepAlive: true },//当前的.vue文件需要缓存
-    },{
+      // meta: { },//当前的.vue文件需要缓存
+    }, {
       path: '/game',
       name: 'game',
+      meta: {
+        keepAlive: true,
+        info: '游戏'
+      },
       component: game,
-      meta: { keepAlive: true },//当前的.vue文件需要缓存
-    },{
+    }, {
       path: '/gamedetail',
       name: 'gamedetail',
+      meta: {
+        info: '游戏详情',
+      },
       component: gamedetail,
-    },{
+    }, {
       path: '/movie',
       name: 'movie',
+      meta: {
+        info: '电影',
+        keepAlive: true
+      },
       component: movie,
-      meta: { keepAlive: true },//当前的.vue文件需要缓存
-    },{
+    }, {
       path: '/moviedetail',
       name: 'moviedetail',
+      meta: {
+        info: '电影详情',
+      },
       component: moviedetail
-    },{
+    }, {
       path: '/novel',
       name: 'novel',
       component: novel,
-      meta: { keepAlive: true },//当前的.vue文件需要缓存
-    },{
+      meta: {
+        info: '小说',
+        keepAlive: true
+      },
+    }, {
       path: '/newsDetail',
+      info: '新闻详情',
+      meta: {
+        info: '新闻详情'
+      },
       name: 'newsDetail',
       component: newsDetail
     }

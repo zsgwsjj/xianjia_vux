@@ -212,7 +212,7 @@
     text-indent: 12px;
     line-height: 40px;
     font-size: 14px;
-    color: #434343;
+    color: black;
   }
 
   .game_name {
@@ -232,7 +232,7 @@
     font-size: 4rem;
     margin-top: 10px;
     margin-left: 2rem;
-    color: #1AAD19;
+    color: black;
     font-weight: bold;
   }
 
@@ -243,6 +243,17 @@
     line-height: 40px;
     font-size: 14px;
     color: #434343;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .com >>> ul span {
+    width: 6em;
+  }
+
+  .com >>> ul p {
+    width: 16em;
   }
 
   .com >>> li {
@@ -273,7 +284,7 @@
     content: '';
     width: 5px;
     height: 18px;
-    background: #1AAD19;
+    background: black;
     border-radius: 2px;
     vertical-align: middle;
     margin: 0 2px 3px 0;

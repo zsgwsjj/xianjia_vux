@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="scrollTop">
-    <x-header :left-options="{showBack: showBack}">咸嘉资源系统</x-header>
+    <x-header style="background-color:#000;" :left-options="{showBack: showBack}">{{title}}</x-header>
     <!--<div style="display: flex">-->
     <!--<div class="title" style=" height: 42px;width: 4em">-->
     <!--<img src="./assets/logo.png" style="margin-left: 10px;height: 42px"/>-->
@@ -21,10 +21,11 @@
 </template>
 
 <script>
-  import {Icon, LoadMore, XHeader} from 'vux'
+  import {Search, Icon, LoadMore, XHeader} from 'vux'
 
   export default {
     components: {
+      Search,
       XHeader,
       LoadMore,
       Icon
@@ -32,26 +33,34 @@
     name: 'app',
     data() {
       return {
+        title: '咸嘉资源系统',
         showBack: true,
         isTopShow: true,
+        isSearchShow: false
       }
     },
     methods: {
+
+
       toTop() {
         document.documentElement.scrollTop = document.body.scrollTop = 0;
       },
       toTopIsShow() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
         this.isTopShow = scrollTop > 800;
+      },
+      changeTitle() {
+        this.showBack = this.$route.name !== 'home';
+        this.title = this.$route.meta.info;
       }
     },
     watch: {
       $route() {
-        this.showBack = this.$route.name !== 'home';
+        this.changeTitle()
       }
     },
     mounted() {
-      this.showBack = this.$route.name !== 'home';
+      this.changeTitle();
       window.addEventListener('scroll', this.toTopIsShow)
     }
   }
@@ -87,5 +96,9 @@
 
   .top_btn:hover {
 
+  }
+
+  .vux-x-icon {
+    fill: white;
   }
 </style>
