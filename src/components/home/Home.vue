@@ -1,9 +1,9 @@
 <template>
   <div>
-    <tab style="margin-top: 0">
-      <tab-item selected @on-item-click="onItemClick">首页</tab-item>
+    <tab style="margin-top: 0" active-class="2">
+      <tab-item :selected="selectItem===1" @on-item-click="onItemClick">首页</tab-item>
       <tab-item @on-item-click="onItemClick(1)">单机</tab-item>
-      <!--<tab-item @on-item-click="onItemClick(2)">电影</tab-item>-->
+      <tab-item @on-item-click="onItemClick(2)">电影</tab-item>
       <!--<tab-item @on-item-click="onItemClick(3)">小说</tab-item>-->
     </tab>
     <swiper :auto="true">
@@ -17,26 +17,23 @@
       </swiper-item>
     </swiper>
     <div class="list_tj" style="margin: 10px">
-      <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="100">
-        <div>
-          <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
-            <div style="display: flex">
-              <div style="width: 63%">
-                <div class="news_title" style="font-size: 15px;height: 70%">{{item.title}}</div>
-                <div style="font-size: 14px;color: #999;display: flex">
-                  <div style="width: 60%">{{item.type}}</div>
-                  <div>{{item.timeDistance}}</div>
-                </div>
+      <div>
+        <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
+          <div style="display: flex">
+            <div style="width: 63%">
+              <div class="news_title" style="font-size: 15px;height: 70%">{{item.title}}</div>
+              <div style="font-size: 14px;color: #999;display: flex">
+                <div style="width: 60%">{{item.type}}</div>
+                <div>{{item.timeDistance}}</div>
               </div>
-              <img style="margin-left: 10px;width: 130px;height: 72px"
-                   :src="item.newsImg"/>
             </div>
-            <load-more style="margin: 0.5em 0 0;" :show-loading="false"
-                       background-color="#434343"></load-more>
+            <img style="margin-left: 10px;width: 130px;height: 72px"
+                 :src="item.newsImg"/>
           </div>
+          <load-more style="margin: 0.5em 0 0;" :show-loading="false" background-color="#434343"></load-more>
         </div>
-
-      </scroller>
+        <load-more v-show="showLoadMore" tip="点击加载更多" :show-loading="showLoading" @click.native="loadMore"></load-more>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +59,8 @@
     name: 'Game',
     data() {
       return {
+        showLoadMore: true,
+        showLoading: false,
         pageNo: 1,
         news: [],
         banner: [],
@@ -70,6 +69,7 @@
         value: '',
         hotGames: [],
         bannerIndex: 0,
+        selectItem: 1,
       }
     },
     methods: {
@@ -100,6 +100,9 @@
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
+              if (resData.data.length < 15) {
+                this.showLoadMore = false;
+              }
               this.news = this.news.concat(resData.data);
             }
           })
@@ -146,6 +149,10 @@
             this.news = resData.data;
           }
         })
+    },
+    activated() {
+      console.log(1212)
+      this.selectItem = 1;
     }
   }
 </script>

@@ -16,7 +16,7 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home,
-      meta: { keepAlive: true },//当前的.vue文件需要缓存
+      // meta: { keepAlive: true },//当前的.vue文件需要缓存
     },{
       path: '/game',
       name: 'game',

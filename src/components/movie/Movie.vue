@@ -1,24 +1,31 @@
 <template>
   <div class="game">
     <tab style="margin-top: 0">
-      <tab-item selected @on-item-click="onItemClick">热门</tab-item>
-      <tab-item @on-item-click="onItemClick(1)">最新</tab-item>
-      <tab-item @on-item-click="onItemClick(2)">评分</tab-item>
+      <tab-item selected @on-item-click="onItemClick(1)">热门</tab-item>
+      <tab-item @on-item-click="onItemClick(2)">最新</tab-item>
+      <tab-item @on-item-click="onItemClick(3)">评分</tab-item>
     </tab>
-    <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
-      <div>
-        <div style="margin-top: 10px"  v-for="item in movies">
-          <div style="display: flex;margin-left: 20px" @click="goToDetail(item)">
-            <img :src="item.movieImgUrl" style="width: 6em;height: 8em"/>
-            <div style="margin-left: 10px;margin-right: 10px">
-              <div style="font-size: 15px">{{item.movieTitle}}</div>
+    <div>
+      <div style="margin-top: 10px" v-for="item in movies">
+        <div style="display: flex;margin-left: 10px">
+          <div class="movie_icon">
+            <img :src="item.movieImgUrl" style="width: 6em;height: 8em" @click="goToDetail(item)"/>
+          </div>
+          <div style="margin-left: 20px;margin-right: 10px">
+            <div style="font-size: 13px;height: 5.5em" @click="goToDetail(item)">{{item.movieTitle}}</div>
+            <div style="display: flex;margin-top: 2em;font-size: 13px">
+              <div style="color: #9b9b9b">评分：</div>
+              <div>{{item.movieRate}}</div>
+              <a style="margin-left: 1em" :href="item.dbUrl">豆瓣</a>
+              <a style="margin-left: 1em" :href="item.imdbUrl">IMDB</a>
             </div>
           </div>
-          <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
-                     background-color="#434343"></load-more>
         </div>
+        <load-more style="margin: 0.8em;width: 95%;height: 2px" :show-loading="false"
+                   background-color="#434343"></load-more>
       </div>
-    </scroller>
+      <load-more tip="点击加载更多" :show-loading="showLoading" @click.native="loadMore"></load-more>
+    </div>
   </div>
 </template>
 
@@ -38,9 +45,9 @@
     name: 'Game',
     data() {
       return {
+        listType: 1,
         pageNo: 1,
         showLoading: false,
-        showNoData: false,
         results: [],
         value: '',
         movies: [],
@@ -50,20 +57,16 @@
     },
     methods: {
       onItemClick(itemId) {
-        console.log(itemId)
+        this.listType = itemId;
+        this.movies = [];
+        this.getMovieData();
       },
       goToDetail(item) {
-        this.$router.push({name: 'moviedetail', params: item});
+        this.$router.push({name: 'moviedetail', params: {id: item.id}});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
-          .then((data) => {
-            let resData = data.data;
-            if (resData.code === 0) {
-              this.movies = this.movies.concat(resData.data);
-            }
-          })
+        this.getMovieData();
       },
       onScrollBottom() {
         if (this.onFetching) {
@@ -82,15 +85,20 @@
       onScroll(pos) {
         this.scrollTop = pos.top
       },
+      getMovieData() {
+        this.showLoading = true;
+        this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}&listType=${this.listType}`)
+          .then((data) => {
+            let resData = data.data;
+            if (resData.code === 0) {
+              this.movies = this.movies.concat(resData.data);
+            }
+            this.showLoading = false;
+          })
+      }
     },
     mounted() {
-      this.$http.jsonp(`${apiDomain}/movie/get?pageNo=${this.pageNo}`)
-        .then((data) => {
-          let resData = data.data;
-          if (resData.code === 0) {
-            this.movies = resData.data
-          }
-        })
+      this.getMovieData();
     }
   }
 </script>
@@ -115,4 +123,8 @@
     color: #42b983;
   }
 
+  .movie_icon {
+    width: 90px;
+    height: 120px
+  }
 </style>

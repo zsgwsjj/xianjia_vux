@@ -5,36 +5,34 @@
       <tab-item @on-item-click="onItemClick(2)">最新</tab-item>
       <!--<tab-item @on-item-click="onItemClick(2)">评分</tab-item>-->
     </tab>
-    <scroller lock-x @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
-      <div>
-        <div v-for="item in games" :key="item.id" style="margin-top: 10px"
-             @click="goToDetail(item.id)">
-          <div style="display: flex;margin-left: 20px">
-            <div class="game_icon">
-              <img :src="item.gameIcon" style="width: 90px;height: 120px"/>
-            </div>
-            <div style="margin-left: 15px">
-              <div style="font-size: 20px">{{item.gameName}}</div>
-              <div style="display: flex;margin-top: 10px">
-                <div class="game_info_list" style="width: 8.5em">
-                  <p>类型：{{item.gameType}}</p>
-                  <p>上线：{{item.releaseTime}}</p>
-                  <p>评分：{{item.gameRate}}</p>
-                </div>
-                <div class="game_info_list" style="margin-left: 10px">
-                  <p>平台：{{item.platform}}</p>
-                  <p>语言：{{item.gameLanguage}}</p>
-                  <!--<p>大小：{{item.gameSize}}</p>-->
-                </div>
+    <div>
+      <div v-for="item in games" :key="item.id" style="margin-top: 10px"
+           @click="goToDetail(item.id)">
+        <div style="display: flex;margin-left: 10px">
+          <div class="game_icon">
+            <img :src="item.gameIcon" style="width: 90px;height: 120px"/>
+          </div>
+          <div style="margin-left: 15px">
+            <div style="font-size: 20px">{{item.gameName}}</div>
+            <div style="display: flex;margin-top: 10px">
+              <div class="game_info_list" style="width: 8.5em">
+                <p>类型：{{item.gameType}}</p>
+                <p>上线：{{item.releaseTime}}</p>
+                <p>评分：{{item.gameRate}}</p>
+              </div>
+              <div class="game_info_list" style="width: 8.5em;margin-left: 10px">
+                <p>平台：{{item.platform}}</p>
+                <p>语言：{{item.gameLanguage}}</p>
+                <!--<p>大小：{{item.gameSize}}</p>-->
               </div>
             </div>
           </div>
-          <load-more style="margin: 0.8em;width: 100%;height: 2px" :show-loading="false"
-                     background-color="#434343"></load-more>
         </div>
-        <load-more tip="loading" :show-loading="showLoading"></load-more>
+        <load-more style="margin: 0.8em;width: 95%;height: 2px" :show-loading="false"
+                   background-color="#434343"></load-more>
       </div>
-    </scroller>
+      <load-more tip="点击加载更多" :show-loading="showLoading" @click.native="loadMore"></load-more>
+    </div>
   </div>
 </template>
 
@@ -57,7 +55,6 @@
         listType: 1,
         pageNo: 1,
         showLoading: false,
-        showNoData: false,
         results: [],
         value: '',
         games: [],
@@ -73,14 +70,12 @@
         this.pageNo = 1;
         this.games = [];
         this.getGameData(true);
-        this.$refs.scrollerBottom.reset()
       },
       goToDetail(id) {
         this.$router.push({name: 'gamedetail', params: {resId: id}});
       },
       loadMore() {
         this.pageNo = this.pageNo + 1;
-        this.showLoading = true;
         this.getGameData();
       },
       onScrollBottom() {
@@ -115,12 +110,14 @@
         })
       },
       getGameData() {
+        this.showLoading = true;
         this.$http.jsonp(`${apiDomain}/game/get?pageNo=${this.pageNo}&listType=${this.listType}`)
           .then((data) => {
             let resData = data.data;
             if (resData.code === 0) {
               this.games = this.games.concat(resData.data);
             }
+            this.showLoading = false;
           })
       }
     },
@@ -153,6 +150,12 @@
   .game_info_list {
     font-size: 14px;
     color: #959595;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .game_info_list p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
