@@ -1,14 +1,15 @@
 <template>
   <div id="app" class="scrollTop">
-    <div style="display: flex">
-      <div class="title" style=" height: 42px;width: 4em">
-        <img src="./assets/logo.png" style="margin-left: 10px;height: 42px"/>
-      </div>
-      <div class="sys_title">咸嘉资源系统</div>
-      <icon style="font-size: 20px;margin-left: 8.8em;margin-top: 10px" type="search"></icon>
-    </div>
-    <load-more style="margin: 0;width: 100%;height: 2px" :show-loading="false"
-               background-color="#434343"></load-more>
+    <x-header :left-options="{showBack: showBack}">咸嘉资源系统</x-header>
+    <!--<div style="display: flex">-->
+    <!--<div class="title" style=" height: 42px;width: 4em">-->
+    <!--<img src="./assets/logo.png" style="margin-left: 10px;height: 42px"/>-->
+    <!--</div>-->
+    <!--<div class="sys_title">咸嘉资源系统</div>-->
+    <!--<icon style="font-size: 20px;margin-left: 8.8em;margin-top: 10px" type="search"></icon>-->
+    <!--</div>-->
+    <!--<load-more style="margin: 0;width: 100%;height: 2px" :show-loading="false"-->
+    <!--background-color="#434343"></load-more>-->
     <div class="top_btn" @click="toTop" v-show="isTopShow">
       <img src="./assets/top.png"/>
     </div>
@@ -20,17 +21,19 @@
 </template>
 
 <script>
-  import {Icon, LoadMore} from 'vux'
+  import {Icon, LoadMore, XHeader} from 'vux'
 
   export default {
     components: {
+      XHeader,
       LoadMore,
       Icon
     },
     name: 'app',
     data() {
       return {
-        isTopShow: false,
+        showBack: true,
+        isTopShow: true,
       }
     },
     methods: {
@@ -42,7 +45,13 @@
         this.isTopShow = scrollTop > 800;
       }
     },
+    watch: {
+      $route() {
+        this.showBack = this.$route.name !== 'home';
+      }
+    },
     mounted() {
+      this.showBack = this.$route.name !== 'home';
       window.addEventListener('scroll', this.toTopIsShow)
     }
   }
