@@ -35,7 +35,7 @@
       return {
         title: '咸嘉资源系统',
         showBack: true,
-        isTopShow: true,
+        isTopShow: false,
         isSearchShow: false
       }
     },
