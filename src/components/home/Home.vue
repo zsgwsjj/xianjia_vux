@@ -30,7 +30,8 @@
       ref="search"></search>
     <div class="list_tj" style="margin: 10px">
       <div>
-        <div style="border:3px double red;color: red;font-size: 14px;text-align: center">手机用户下载磁力链接请长按复制链接到手机迅雷或百度云下载</div>
+        <div style="border:3px double red;color: red;font-size: 14px;text-align: center">手机用户下载磁力链接请长按复制链接到手机迅雷或百度云下载
+        </div>
         <div style="margin-top: 10px">
           <div v-for="item in news" :key="item.id" style="height: 100px" @click="goToNews(item)">
             <div style="display: flex">
@@ -44,7 +45,7 @@
               <img style="margin-left: 10px;width: 130px;height: 72px"
                    :src="item.newsImg"/>
             </div>
-        </div>
+          </div>
 
           <load-more style="margin: 0.5em 0 0;" :show-loading="false" background-color="#434343"></load-more>
         </div>
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-  import {Scroller, Tab, TabItem, LoadMore, Divider, XHeader, Swiper, Search, Toast} from 'vux'
+  import {Divider, LoadMore, Scroller, Search, Swiper, Tab, TabItem, Toast, XHeader} from 'vux'
   import SwiperItem from "vux/src/components/swiper/swiper-item";
   import {apiDomain} from '../../comm';
 
@@ -93,11 +94,28 @@
         this.$refs.search.setFocus()
       },
       resultClick(item) {
-        window.alert('you click the result item: ' + JSON.stringify(item))
+        switch (item.resType) {
+          case 1:
+            this.$router.push({name: 'gamedetail', params: {resId: item.resId}});
+            break;
+          case 2:
+            this.$router.push({name: 'moviedetail', params: {id: item.resId}});
+            break;
+        }
       },
       getResult(val) {
         console.log('on-change', val)
-        this.results = val ? getResult(this.value) : []
+        if (val.length === 0) this.results = [];
+        else this.doSearch();
+      },
+      doSearch() {
+        this.$http.jsonp(`${apiDomain}/comm/search?name=${this.value}`)
+          .then((data) => {
+            let resData = data.data;
+            if (resData.code === 0) {
+              this.results = resData.data;
+            }
+          })
       },
       onFocus() {
         console.log('on focus')
@@ -131,16 +149,16 @@
       clickBanner(id) {
         this.goToDetail(id)
       },
-      onChange() {
-        if (!this.value) return;
-        this.$http.jsonp(`${apiDomain}/resource/find?name=${this.value}`)
-          .then((data) => {
-            let resData = data.data;
-            if (resData.code === 0) {
-              this.results = resData.data.Game;
-            }
-          });
-      },
+      // onChange() {
+      //   if (!this.value) return;
+      //   this.$http.jsonp(`${apiDomain}/resource/find?name=${this.value}`)
+      //     .then((data) => {
+      //       let resData = data.data;
+      //       if (resData.code === 0) {
+      //         this.results = resData.data.Game;
+      //       }
+      //     });
+      // },
       onSubmit() {
         if (!this.value) this.$vux.toast.text('请输入要搜索的游戏名');
         console.log(this.value);
@@ -170,16 +188,6 @@
       console.log(1212)
       this.selectItem = 1;
     }
-  }
-  function getResult (val) {
-    let rs = []
-    for (let i = 0; i < 20; i++) {
-      rs.push({
-        title: `${val} result: ${i + 1} `,
-        other: i
-      })
-    }
-    return rs
   }
 </script>
 
@@ -213,5 +221,9 @@
     -webkit-box-orient: vertical;
     word-break: break-all;
     font-weight: 600;
+  }
+
+  .weui-cells {
+    font-size: 12px;
   }
 </style>
